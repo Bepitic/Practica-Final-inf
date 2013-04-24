@@ -1,0 +1,1022 @@
+/*********************************************************;****/
+/*      AUTOR: Francisco Amoros Cubells                      */
+/*      CURSO: Primero, Ingenieria Informatica              */
+/*    NOMBRE:  main.cpp                                    */
+/*                                                          */
+/*  PROPÓSITO:  Se tiene en un fichero de texto la          */
+/* informacion relativa a diferentes montanas de todo        */
+/* el mundo. Se trata de realizar un programa que pida el    */
+/* nombre del fichero donde esta la informacion y una vez    */
+/* leida la informacion del fichero y guardada en una        */
+/* estructura de datos en memoria, permita mediante          */
+/* un menu modificar las variables.                          */
+/*                                                          */
+/*                                                          */
+/*************************************************************/
+
+#include <iostream>
+#include <string>
+#include <fstream>
+
+#include <stdlib.h>
+
+using namespace std;
+const int MAX = 500;
+struct Lat_Lon
+{
+    int a;
+    int b;
+    int c;
+    char d;
+};
+
+struct Montana
+{
+    int indice;
+    string nombre;
+    unsigned int altura;
+    string pais_es;
+    Lat_Lon latitud;
+    Lat_Lon longitud;
+    bool mostrar_latYlong;
+};
+
+typedef Montana Vmont[MAX];
+typedef string V_Pais[MAX];
+
+void MontanaEntreDosAlturas(Vmont v_montana, int num_elementos);
+bool Nombrecon_TXT (string nombre);
+Montana New_Monta ( );
+void MostrarMontana( Montana mont);
+bool LeerMontana(ifstream &f_mon, Montana &mont );
+void Mostrartodo(Vmont v_mont, int num);
+void GuardarMontana(ofstream &f_mon_of, string nombre, Montana mont);
+void GuardarTodasMontanas(ofstream &f_mon_of, string nombre, Vmont v_montana, int indice);
+void ConvertirString_a_lat_lon(string lat_lon, Montana &mont);
+void MenuConsultasPais(Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises);
+void MenuGestionMontanas(Vmont &v_montana, int &num_elementos, V_Pais paises, int ind_vec_paises);
+void ModificarMontana( Vmont &v_montana, int &num_elementos);
+void PaisConMediaMasAlta(Vmont v_montana, int num_elementos, V_Pais paises, int ind_vec_paises);
+void MontanaMasAlta(Vmont v_montana, int num_elementos);
+void Buscar_entre_alturas( Vmont v_montana, int num_elementos, int max, int min);
+int Buscar_montana_por_nombre(Vmont v_montana, int num_elementos, string nombre_montana);
+void HacerVectorDePaises(Vmont v_montana, int num_elementos, V_Pais paises);
+void MenuJuego(Vmont v_montana, int indice_vec_mont);
+int VectorDePaises(Vmont v_montana, int num_elementos, V_Pais paises);
+void ListarMontanas(Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises);
+float MediaMontanaPais( Vmont v_montana, int num_elementos, string mon_pais);
+void MediaDeAlturas(Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises);
+void MontanaMasAltaPais (Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises);
+void DeterminarAltura(Vmont v_montana, int indice_vec_mont);
+void DeterminarPais(Vmont v_montana, int indice_vec_mont);
+
+int main(void)
+{
+    ifstream f_mon;
+    ofstream f_mon_of;
+    int opcion2;
+
+    V_Pais paises;
+    Vmont v_montana;
+
+    Montana montana;
+
+    string name_f_mont, nombre_guardar;
+
+    int num_opcion = 4, indice_vec_mont = 0, num_vector_paises;
+
+    srand(time(NULL));
+
+    cout << " Hola este programa, otiene de un fichero, \n";
+    cout << "informacion relativa a diferentes montañas ";
+    cout << "de todo el mundo\n y ofrece un menu para poder interactuar con ellas." << endl;
+    cout << "Por favor introduce el nomebre del fichero a utilizar: ";
+
+    cin >> name_f_mont;
+
+    if ( Nombrecon_TXT (name_f_mont) == false)
+        name_f_mont += ".txt";
+    f_mon.open( name_f_mont.c_str());
+
+    if(!f_mon)
+        cout << "No se ha podido abrir el fichero.";
+    else
+    {
+        while( LeerMontana ( f_mon, montana ) )
+        {
+            v_montana[indice_vec_mont] = montana;
+            indice_vec_mont++;
+        }
+        f_mon.close();
+    }
+
+    num_vector_paises = VectorDePaises( v_montana,  indice_vec_mont,  paises);
+
+    while(num_opcion != 0)
+    {
+        cout << "1. Entrar en el menu de gestion de montanas." << endl;
+        cout << "2. Entrar en el menu de consultas por pais." << endl;
+        cout << "3. Entrar en el juego." << endl;
+        cout << "0. Salir del programa." << endl;
+        cout << "Introduce numero de la opcion: ";
+
+        cin >> num_opcion;
+
+        switch (num_opcion)
+        {
+            case 1:
+                cout << "Has entrado en : \n1. Entrar en el menu de gestion de montanas." << endl;
+                MenuGestionMontanas( v_montana, indice_vec_mont, paises, num_vector_paises);
+                break;
+
+            case 2:
+                cout << "Has entrado en : \n2. Entrar en el menu de consultas por pais." << endl;
+                MenuConsultasPais( v_montana, indice_vec_mont, paises, num_vector_paises);
+                break;
+
+            case 3:
+                cout << "Has entrado en : \n3. Entrar en el juego." << endl;
+                MenuJuego(v_montana, indice_vec_mont);
+                break;
+
+            default:
+                break;
+        }
+
+    }
+    cout << "Quieres guardar loc cambios 1 - si / 2 - no " << endl;
+    cin >> opcion2;
+    if (opcion2 == 1)
+    {
+        cout << " Introduce nombre que tendra el documento. " << endl;
+        cin >> nombre_guardar;
+        GuardarTodasMontanas( f_mon_of, nombre_guardar, v_montana, indice_vec_mont)
+    }
+
+
+
+    return 0;
+}
+void MenuJuego(Vmont v_montana, int indice_vec_mont)
+{
+    int opcion;
+    cout << " 1) Dada una montana, determinar al menos un pais, en tres intentos." << endl;
+    cout << " 2) Dada una montana, determinar su altura con un error de mas/menos 100 metros. dando como maximo 3 pistas. " << endl;
+    cout << " Introduce una opcion: " << endl;
+    cin >> opcion;
+    switch (opcion)
+    {
+        case 1:
+            DeterminarPais(v_montana, indice_vec_mont);
+            break;
+        case 2:
+            DeterminarAltura(v_montana, indice_vec_mont);
+            break;
+
+        default:
+            break;
+    }
+    return;
+}
+
+void DeterminarPais(Vmont v_montana, int indice_vec_mont)
+{
+    int num = 0, num2 = 0;
+    string pais;
+    num = rand() % indice_vec_mont;
+    while(num2 < 3)
+    {
+        cout << " El nombre de la montana es " << v_montana[num].nombre << endl;
+        cout << "Introduce el pais al que pertenece:  " << endl;
+        cin >> pais;
+        if ( (v_montana[num].pais_es).length() > (v_montana[num].pais_es).find(pais) )
+        {
+            cout << " Has hacertado !" << endl;
+            num2 = 3;
+        }
+        else
+        {
+            num2++;
+        }
+    }
+    cout << " El pais era: " << v_montana[num].pais_es << endl;
+
+    return;
+}
+
+void DeterminarAltura(Vmont v_montana, int indice_vec_mont)
+{
+    int num;
+    string altura
+    num = rand() % indice_vec_mont;
+
+    while(num2 < 3)
+    {
+        cout << " El nombre de la montana es " << v_montana[num].nombre << endl;
+
+        cout << "Introduce el pais al que pertenece:  " << endl;
+        cin >> altura;
+        if ( (v_montana[num].altura - 100) <= altura && (v_montana[num].altura + 100) >= altura )
+        {
+            cout << " Has hacertado !" << endl;
+            num2 = 3;
+        }
+        else
+        {
+            if (v_montana[num].altura < altura)
+            {
+                cout << " Te has pasado " << endl;
+            }
+            else
+            {
+                cout << " Te has quedado corto " << endl;
+            }
+
+            num2++;
+        }
+    }
+    cout << " La altura era: " << v_montana[num].altura << endl;
+
+
+
+    return;
+}
+
+
+void MenuConsultasPais(Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises)
+{
+    int opcion;
+    cout << " 1) Listar las montanas referentes a un pais, con opciones de guardar en diferentes formatos: " << endl;
+    cout << " 2) Calcular la altura media de las montanas un pais: " << endl;
+    cout << " 3) Determinar la montana mas alta del pais:  " << endl;
+    cout << " Introduce la opcion: ";
+    cin >> opcion;
+    switch (opcion)
+    {
+        case 1:
+            cout << " Listar las montanas referentes a un pais: " << endl;
+            ListarMontanas( v_montana, indice_vec_mont, paises, num_vector_paises);
+
+            break;
+        case 2:
+            cout << " Calcular la media de alturas de las montanas un pais" << endl;
+            MediaDeAlturas(v_montana, indice_vec_mont, paises, num_vector_paises);
+
+            break;
+        case 3:
+            cout << " Determina la montana mas alta del pais: " << endl;
+            MontanaMasAltaPais(v_montana, indice_vec_mont, paises, num_vector_paises);
+            break;
+
+        default:
+            break;
+    }
+
+    return;
+}
+
+void MontanaMasAltaPais (Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises)
+{
+    ifstream montanas_dat;
+    ofstream mont_dat;
+    string paiss, pais2, nombre, nombre_max;
+    int indice_vmont = 0, altura, altura_max = 0;
+    Vmont v_montpais;
+
+
+
+    cout << "Introduce nombre de la montana: " << endl;
+    cin >> paiss;
+    pais2 = paiss;
+    pais2 += ".dat";
+    montanas_dat.open(pais2.c_str());
+    if (!montanas_dat)
+    {
+        cout << "Introduce nombre de la montana: " << endl;
+        cin >> paiss;
+        for (int i = 0; i < indice_vec_mont; i++)
+        {
+            if ( v_montana[i].pais_es == paiss )
+            {
+                v_montpais[indice_vmont] = v_montana[i];
+                MostrarMontana(v_montana[i]);
+                indice_vmont++;
+            }
+        }
+
+        mont_dat.open(paiss.c_str(), ios::app);
+        if (!mont_dat)
+        {
+            cout << " No se pudo abrir el fichero " << endl;
+        }
+        else
+        {
+            for (int i = 0; i < indice_vmont; i++)
+            {
+                mont_dat << v_montpais[i].altura;
+                mont_dat << " ";
+                mont_dat << v_montpais[i].nombre;
+                mont_dat << " ";
+            }
+            montanas_dat.close();
+        }
+
+        montanas_dat.open(pais2.c_str());
+        if (!montanas_dat)
+        {
+            cout << " No se pudo abrir el fichero " << endl;
+        }
+        else
+        {
+            while (!montanas_dat.eof())
+            {
+                montanas_dat >> altura;
+                montanas_dat >> nombre;
+                if ( altura_max < altura )
+                {
+                    altura_max = altura;
+                    nombre_max = nombre;
+                }
+
+            }
+        }
+
+
+
+    }
+    else
+    {
+        while (!montanas_dat.eof())
+        {
+            montanas_dat >> altura;
+            montanas_dat >> nombre;
+            if ( altura_max < altura )
+            {
+                altura_max = altura;
+                nombre_max = nombre;
+            }
+        }
+    }
+    cout << " La montana mas alta de " << paiss << " es: " << nombre_max << "con una altura de: " << altura_max << endl;
+
+
+
+    return;
+}
+
+void MediaDeAlturas(Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises)
+{
+    ifstream montanas_bin_dat;
+    ofstream mont_bin_dat;
+    string paiss, pais2;
+
+    int indice_vmont = 0, sumatorio = 0, contador = 0, dato;
+    float media;
+    Vmont v_montpais;
+
+    cout << "Introduce nombre de la montana: " << endl;
+    cin >> paiss;
+    pais2 = paiss;
+    pais2 += ".alturas.dat";
+    montanas_bin_dat.open(pais2.c_str(), ios::binary);
+    if (!montanas_bin_dat)
+    {
+        for (int i = 0; i < indice_vec_mont; i++)
+        {
+            if ( v_montana[i].pais_es == paiss )
+            {
+                v_montpais[indice_vmont] = v_montana[i];
+                indice_vmont++;
+            }
+        }
+        mont_bin_dat.open(pais2.c_str(), ios::binary);
+        if (!mont_bin_dat)
+        {
+            cout << " No se pudo abrir el fichero " << endl;
+        }
+        else
+        {
+            for (int i = 0; i < indice_vmont; i++)
+            {
+                mont_bin_dat.write((char *)(& v_montpais[i].altura), sizeof(v_montpais[i].altura) );
+            }
+            mont_bin_dat.close();
+        }
+
+        montanas_bin_dat.open(pais2.c_str(), ios::binary);
+        if (!montanas_bin_dat)
+        {
+            cout << "Error abriendo el fichero" << endl;
+        }
+        else
+        {
+            while(montanas_bin_dat.read((char *)(& dato), sizeof(dato) ) )
+            {
+                sumatorio += dato;
+                contador++;
+            }
+        }
+    }
+    else
+    {
+        while(montanas_bin_dat.read((char *)(& dato), sizeof(dato) ) )
+        {
+            sumatorio += dato;
+            contador++;
+        }
+
+    }
+    media = float(sumatorio) / float(contador);
+    cout << "La altura media de las montanas de: " << paiss << " es de: " << media << endl;
+    return;
+}
+
+void ListarMontanas(Vmont &v_montana, int &indice_vec_mont, V_Pais paises, int num_vector_paises)
+{
+    string paiss;
+    int indice_vmont = 0, opcion;
+    Vmont v_montpais;
+    ofstream texto_dat, bin_dat;
+
+    cout << "Introduce nombre de la montana: " << endl;
+    cin >> paiss;
+    for (int i = 0; i < indice_vec_mont; i++)
+    {
+        if ( v_montana[i].pais_es == paiss )
+        {
+            v_montpais[indice_vmont] = v_montana[i];
+            MostrarMontana(v_montana[i]);
+            indice_vmont++;
+        }
+    }
+    cout << " 1) Guardar altura y nombre de estas montanas en texto en un .dat " << endl;
+    cout << " 2) Guardar altura solamente en binario en un .alturas.dat " << endl;
+    cout << " 3) No hacer nada. " << endl;
+    cout << " Selecciona opcion. " << endl;
+    cin >> opcion;
+
+
+
+
+    switch (opcion)
+    {
+        case 1:
+            paiss += ".dat";
+            texto_dat.open(paiss.c_str(), ios::app);
+            if (!texto_dat)
+            {
+                cout << " No se pudo abrir el fichero " << endl;
+            }
+            else
+            {
+                for (int i = 0; i < indice_vmont; i++)
+                {
+                    texto_dat << v_montpais[i].altura;
+                    texto_dat << " ";
+                    texto_dat << v_montpais[i].nombre;
+                    texto_dat << " ";
+                }
+                texto_dat.close();
+            }
+            cout << " Hecho. " << endl;
+            break;
+        case 2:
+            paiss += ".alturas.bin";
+            bin_dat.open(paiss.c_str(), ios::binary);
+            if (!bin_dat)
+            {
+                cout << " No se pudo abrir el fichero " << endl;
+            }
+            else
+            {
+                for (int i = 0; i < indice_vmont; i++)
+                {
+                    bin_dat.write((char *)(& v_montpais[i].altura), sizeof(v_montpais[i].altura) );
+                }
+                bin_dat.close();
+            }
+
+            cout << " Hecho. " << endl;
+            break;
+
+
+        default:
+            break;
+    }
+
+    return;
+}
+
+void MenuGestionMontanas(Vmont &v_montana, int &num_elementos,V_Pais paises, int ind_vec_paises)
+{
+    int opcion;
+    cout << "1) Dar de alta, baja o modificar la informacion relativa a una montana concreta una vez introducido su nombre." << endl;
+    cout << "2) Listar todas las montanas que esten entre unos determinados parametros de altura. " << endl;
+    cout << "3) Determinar el pais con la altura media de montanas mas elevado." << endl;
+    cout << "4) Determinar la montana mas alta." << endl;
+    cout << "Introduce numero de la opcion: ";
+    cin >> opcion;
+    switch (opcion)
+    {
+        case 1:
+            cout << "Has entrado en el menu de modificar un montana :" << endl;
+            ModificarMontana( v_montana, num_elementos );
+            break;
+
+        case 2:
+            cout << "Has entrado en el menu de listar las montanas entre dos parametros de altura :" << endl;
+            MontanaEntreDosAlturas( v_montana, num_elementos );
+            break;
+
+        case 3:
+            cout << "Has entrado en el menu de determinar el pais con la altura media de montanas mas elevado :" << endl;
+            PaisConMediaMasAlta( v_montana, num_elementos,  paises,  ind_vec_paises );
+            break;
+        case 4:
+            cout << "Has entrado en el menu de determinar la montana mas alta :" << endl;
+            MontanaMasAlta( v_montana, num_elementos );
+            break;
+
+        default:
+            break;
+    }
+    return;
+}
+
+void MontanaEntreDosAlturas(Vmont v_montana, int num_elementos)
+{
+    int max, min;
+    cout << "Introduzca el maximo de altura por que que buscar: " << endl;
+    cin >> max;
+
+    cout << "Introduzca el minimo de altura por que que buscar: " << endl;
+    cin >> min;
+
+    Buscar_entre_alturas(v_montana, num_elementos, max, min);
+
+    return;
+}
+
+void Buscar_entre_alturas( Vmont v_montana, int num_elementos, int max, int min)
+{
+    for (int i = 0; i < num_elementos; ++i)
+    {
+        if(v_montana[i].altura <= max && v_montana[i].altura >= min )
+            MostrarMontana(v_montana[i]);
+    }
+
+    return;
+}
+
+void ModificarMontana( Vmont &v_montana, int &num_elementos)
+{
+    int opcion, montana_a_modif;
+    Vmont v_mont2;
+    int num = 0;
+    string nombre_montana;
+    cout << "Que busca: " << endl;
+    cout << "1) Dar de alta: " << endl;
+    cout << "2) Dar de baja: " << endl;
+    cout << "3) Modificar una Montana: " << endl;
+    cin >> opcion;
+
+    switch ( opcion ) {
+        case 1:
+            cout << " Dar de alta una Montana: " << endl;
+            v_montana[num_elementos] = New_Monta();
+            num_elementos++;
+            break;
+
+        case 2:
+            cout << " Dar de baja una montana:\n Introduce el nombre: " << endl;
+            cin >> nombre_montana;
+            montana_a_modif = Buscar_montana_por_nombre(v_montana, num_elementos, nombre_montana);
+
+            for (int i = 0; i < num_elementos; i++)
+            {
+                if ( i != montana_a_modif )
+                {
+                    v_mont2[num] = v_montana[i];
+                    num++;
+                }
+            }
+
+            for ( int i = 0; i < num_elementos; i++ )
+            {
+                v_montana[i] = v_mont2[i];
+            }
+
+            num_elementos = num;
+
+            break;
+
+        case 3:
+            cout << " Modificar una Montana:\n Introduce el nombre: " << endl;
+            cin >> nombre_montana;
+            montana_a_modif = Buscar_montana_por_nombre(v_montana, num_elementos, nombre_montana);
+            MostrarMontana(v_montana[montana_a_modif]);
+            v_montana[montana_a_modif] = New_Monta();
+
+            break;
+
+        default:
+            break;
+    }
+
+    return;
+}
+
+int Buscar_montana_por_nombre(Vmont v_montana, int num_elementos, string nombre_montana)
+{
+    int num_montana;
+    for (int i = 0; i < num_elementos; i++)
+    {
+        if ( v_montana[i].nombre == nombre_montana )
+        {
+            num_montana = i;
+        }
+    }
+    return num_montana;
+}
+
+void PaisConMediaMasAlta( Vmont v_montana, int num_elementos, V_Pais paises, int ind_vec_paises)
+{
+    int numero_demont_mas_media;
+    float media, media_max = 0;
+    for (int i = 0; i < ind_vec_paises; i++)
+    {
+
+        media = MediaMontanaPais(v_montana, num_elementos, paises[i] ) ;
+        if (media_max < media)
+        {
+            media_max = media;
+            numero_demont_mas_media = i;
+        }
+
+    }
+    cout << " El pais " << paises[numero_demont_mas_media] << " tiene una media de altura de montanas de : " << media_max << endl;
+
+    return;
+}
+
+float MediaMontanaPais( Vmont v_montana, int num_elementos, string mon_pais)
+{
+    float sumador = 0, contador = 0, media;
+
+    for (int j = 0; j < num_elementos; j++)
+    {
+        if (  (v_montana[j].pais_es).find(mon_pais) < (v_montana[j].pais_es).length() )
+        {
+            sumador += v_montana[j].altura;
+            contador++;
+        }
+    }
+    media = sumador / contador;
+
+
+    return media;
+}
+
+void MontanaMasAlta(Vmont v_montana, int num_elementos)
+{
+    int altura_max, num_mont_mas_alta;
+    altura_max = v_montana[0].altura;
+
+    for (int i = 0; i < num_elementos; ++i)
+    {
+        if (v_montana[i].altura > altura_max )
+        {
+            altura_max = v_montana[i].altura;
+            num_mont_mas_alta = i;
+        }
+    }
+    MostrarMontana(v_montana[num_mont_mas_alta]);
+    return;
+}
+
+void ConvertirString_a_lat_lon(string lat_lon, Montana &mont)
+{
+    string a, b, c, d, a1, b1, c1, d1;
+    int num;
+
+    a += lat_lon[1];
+    a += lat_lon[2];
+    b += lat_lon[4];
+    b += lat_lon[5];
+    c += lat_lon[7];
+    c += lat_lon[8];
+    mont.latitud.d =  lat_lon[10];
+
+    a1 += lat_lon[12];
+    a1 += lat_lon[13];
+    b1 += lat_lon[15];
+    b1 += lat_lon[16];
+    c1 += lat_lon[18];
+    c1 += lat_lon[19];
+    mont.longitud.d  = lat_lon[21];
+
+
+    num = atoi(a.c_str());
+    mont.latitud.a = num;
+    num = atoi(b.c_str());
+    mont.latitud.b = num;
+    num = atoi(c.c_str());
+    mont.latitud.c = num;
+
+    num = atoi(a1.c_str());
+    mont.longitud.a = num;
+    num = atoi(b1.c_str());
+    mont.longitud.b = num;
+    num = atoi(c1.c_str());
+    mont.longitud.c = num;
+
+}
+
+/**********************************************************
+* Funcion Nombrecon_TXT
+*
+* Parametros:
+* Nombre     E/S       Descripcion
+* ------     ---     ---------------
+* nombre      E        Un string para ver si contiene txt  o no
+*
+* Valor devuelto:
+*  Un booleano con true si tiene ".txt" el string,
+* o false si no lo contiene
+***********************************************************/
+
+bool Nombrecon_TXT (string nombre)
+{
+    bool contiene_txt = false;
+    string txt = ".txt";
+    unsigned long x;
+
+    x = nombre.find( txt );
+    if (x > 0 && x < nombre.length())
+        contiene_txt = true;
+    else
+        contiene_txt = false;
+
+    return contiene_txt;
+}
+
+/**********************************************************
+* Funcion New_Monta
+*
+* Parametros:
+* Nombre     E/S       Descripcion
+* ------     ---     ---------------
+* void
+*
+* Valor devuelto:
+* Una Variable Montana
+***********************************************************/
+
+Montana New_Monta()
+{
+    Montana m;
+    int num_paises;
+    char separa_pal = '_', separa_pais = '/';
+    string pais, lat, lon;
+
+    cout << "Introduce, nombre de la montanya: ";
+    cin >> m.nombre ;
+
+    cout << "Introduce, altura de la montanya: ";
+    cin >> m.altura ;
+
+    cout << "Introduce, indice de la montanya: ";
+    cin >> m.indice ;
+
+    cout << "Cuantos paises contiene la montanya: ";
+    cin >> num_paises;
+
+    cin.ignore();
+
+
+    for (int i = 0; i < num_paises; ++i)
+    {
+        cout << "Introduce Pais " << i << " : ";
+        getline(cin, pais);
+
+        for (int i = 0; i < pais.length(); ++i)
+            if ( pais[i] == ' ' )
+                pais[i] = separa_pal;
+
+        m.pais_es += pais;
+        if ( (i == num_paises -1) == false )
+            m.pais_es += separa_pais;
+    }
+
+    cout << "Introduce, latitud :";
+    cout << "primer termino:";
+    cin >> m.latitud.a;
+    cout << "segundo termino:";
+    cin >> m.latitud.b;
+    cout << "Tercer termino:";
+    cin >> m.latitud.c;
+    cout << "Letra:";
+    cin >> m.latitud.d;
+    m.mostrar_latYlong = true;
+
+
+    return m;
+}
+
+/**********************************************************
+* Funcion MostrarMontana
+*
+* Parametros:
+* Nombre     E/S       Descripcion
+* ------     ---     ---------------
+* mont          E       Variable a mostrar
+*
+* Valor devuelto:
+* void
+***********************************************************/
+
+void MostrarMontana( Montana mont)
+{
+
+    cout << " |--------------------------------------| " << endl;
+    cout << " Nombre Montanya: " << mont.nombre << endl;
+    cout << " Altura: " << mont.altura << endl;
+    cout << " Indice: " << mont.indice << endl;
+    cout << " Pais o paises: " << mont.pais_es << endl;
+    if (mont.mostrar_latYlong)
+    {
+
+
+        cout << " Latitud : " << mont.latitud.a << " " << mont.latitud.b << " " << mont.latitud.c << " " << mont.latitud.d << endl;
+        cout << " Longitud: " << mont.longitud.a << " " << mont.longitud.b << " " << mont.longitud.c << " " << mont.longitud.d << endl;
+    }
+    cout << " |--------------------------------------| " << endl;
+    cout << endl;
+
+    return;
+}
+
+/**********************************************************
+* Funcion LeerMontana
+*
+* Parametros:
+* Nombre     E/S       Descripcion
+* ------     ---     ---------------
+* f_mon      S      fichero para sacar informacion
+* mont        S      variable donde guardar la informacion
+*
+* Valor devuelto:
+* bool para saber si el fichero ha acabado o no
+***********************************************************/
+
+bool LeerMontana(ifstream &f_mon, Montana &mont )
+{
+    string lat_lon;
+
+    f_mon >> mont.indice;
+    f_mon >> mont.nombre;
+    f_mon >> mont.altura;
+    f_mon >> mont.pais_es;
+    getline(f_mon, lat_lon);
+    if( lat_lon.length() > 2)
+    {
+
+        ConvertirString_a_lat_lon(lat_lon, mont);
+        mont.mostrar_latYlong = true;
+    }
+    else
+    {
+        mont.mostrar_latYlong = false;
+    }
+
+    return !(f_mon.eof());
+}
+
+/**********************************************************
+* Funcion Mostrartodo
+*
+* Parametros:
+* Nombre     E/S       Descripcion
+* ------     ---     ---------------
+* v_mont      E
+*
+* Valor devuelto:
+* muestra todos los valores de v_mont
+***********************************************************/
+
+void Mostrartodo(Vmont v_mont, int num)
+{
+    for (int i = 0; i < num; ++i)
+    {
+        MostrarMontana(v_mont[i]);
+    }
+    return;
+}
+
+void GuardarMontana(ofstream &f_mon_of, string nombre, Montana mont)
+{
+    f_mon_of.open(nombre.c_str(),ios::app);
+
+    if (!f_mon_of)
+    {
+        cout << "no se puede abrir el archivo" << endl;
+    }
+
+    else
+    {
+        f_mon_of << mont.indice;
+        f_mon_of << ' ';
+        f_mon_of << mont.nombre;
+        f_mon_of << ' ';
+        f_mon_of << mont.altura;
+        f_mon_of << ' ';
+        f_mon_of << mont.pais_es;
+        f_mon_of << ' ';
+
+        if (mont.mostrar_latYlong)
+        {
+            f_mon_of << mont.latitud.a;
+            f_mon_of << ' ';
+            f_mon_of << mont.latitud.b;
+            f_mon_of << ' ';
+            f_mon_of << mont.latitud.c;
+            f_mon_of << ' ';
+            f_mon_of << mont.latitud.d;
+            f_mon_of << ' ';
+            f_mon_of << mont.longitud.a;
+            f_mon_of << ' ';
+            f_mon_of << mont.longitud.b;
+            f_mon_of << ' ';
+            f_mon_of << mont.longitud.c;
+            f_mon_of << ' ';
+            f_mon_of << mont.longitud.d;
+        }
+        f_mon_of << "\n";
+    }
+
+    return;
+}
+
+void GuardarTodasMontanas(ofstream &f_mon_of, string nombre, Vmont v_montana, int num_elementos)
+{
+    for (int i = 0; i < num_elementos; ++i)
+    {
+        GuardarMontana( f_mon_of, nombre, v_montana[i]);
+    }
+    return;
+}
+
+int VectorDePaises(Vmont v_montana, int num_elementos, V_Pais paises)
+{
+    string todos_paises;
+    V_Pais paises2;
+    unsigned long primer_elemento = 0, segundo_elemento = 0, tercer = 0;
+    int num = 0;
+    int num_ind_vec = 0, num_ind_vec2 = 0;
+
+    for (int i = 0; i < num_elementos ; i++)
+    {
+        todos_paises += v_montana[i].pais_es;
+        todos_paises += '/';
+    }
+
+
+
+    while (segundo_elemento < todos_paises.length())
+    {
+        primer_elemento = segundo_elemento;
+        segundo_elemento = todos_paises.find("/", segundo_elemento +1);
+        tercer = segundo_elemento - primer_elemento;
+        paises2[num] = todos_paises.substr(primer_elemento, tercer);
+        num++;
+    }
+
+    for (int i = 1 ; i < num ; i++)
+    {
+        paises2[i].erase(0, 1);
+    }
+
+
+    while (num_ind_vec < num)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            if (((paises2[i]) == (paises2[num_ind_vec])) && (i != num_ind_vec))
+            {
+                paises2[num_ind_vec] = "1234";
+            }
+        }
+        num_ind_vec++;
+    }
+
+    for (int i = 0; i < num; ++i)
+    {
+        if (paises2[i] != "1234")
+        {
+            paises[num_ind_vec2] = paises2[i];
+            num_ind_vec2++;
+        }
+    }
+
+    return num_ind_vec2;
+}
