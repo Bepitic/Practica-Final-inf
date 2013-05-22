@@ -1,0 +1,120 @@
+/********** Boletin 01. Ejercicio 7. Simplifica  **************
+ *
+ * Historial de Desarrollo:
+ * Fecha         Autor
+ * ----------    ---------------------------
+ * 29/10/2012  Francisco Amororos Cubells
+ *
+ **************************************/
+
+
+
+#include <iostream>  //Importando librerias para la utilizacion de "cin y cout"
+using namespace std;
+
+int main( void ) //Funcion principal
+{
+    int num_numerador, num_denominador, num_cociente; // Declaracion de las variables, para numerador, denominador, cociente
+    
+    cout << "Por favor teclea el numerador : ";
+    
+    cin >> num_numerador; // Introduccion del numero que sera el numerador
+    
+    cout << endl << "Por favor teclea el denominador : ";
+    
+    cin >> num_denominador; // Introduccion del numero que sera el denominador
+    
+    
+    num_cociente = 2 ; // Asignacion de 2 a la variable resto
+    
+   
+    if (num_denominador == num_numerador ) {
+        
+        // En caso de que se sean el mismo numero el numerador y el denominador, que se igualen a uno
+        
+        cout << " ( 1 / 1 ) = 1 " ;
+        
+        
+    }
+    else if ( num_numerador > 0 )
+        {
+            // En caso contrario, se simplifique
+            
+            cout << " ( " << num_numerador << " / " << num_denominador << " ) ";
+    
+            
+            
+            for ( num_cociente = 2 ; num_cociente <= num_numerador; num_cociente++ )
+            { // Va sumando numeros al cociente hasta que alcanza el numerador
+        
+                
+                while ( num_denominador % num_cociente == num_numerador % num_cociente )
+                { // Comprueba si el resto del denominador y el numerador entre el cociente son iguales
+        
+                    if (num_numerador % num_cociente == 0)
+                    { // Comprueba si el resto del numerador entre el cociente es 0, entonces la division es entera
+                        
+                        num_denominador = num_denominador / num_cociente; //se divide, el denominador entre el cociente
+                
+                        num_numerador = num_numerador / num_cociente; //se divide, el numerador entre el cociente
+        
+                        //salida de texto con los parametros especificados
+                        
+                        cout << " = " ;
+        
+                        cout << " ( " << num_numerador << " / " << num_denominador << " ) ";
+        
+                        num_cociente = 2;
+                    
+                        }
+        
+                    }
+    
+            }
+   
+        }
+    else
+        {
+        // En caso contrario, se simplifique
+        
+        cout << " ( " << num_numerador << " / " << num_denominador << " ) ";
+        
+        //Se deja positivo el numerador y en la salida se deja negativo
+        num_numerador = num_numerador * -1;
+        
+        
+        for ( num_cociente = 2 ; num_cociente <= num_numerador; num_cociente++ )
+        { // Va sumando numeros al cociente hasta que alcanza el numerador
+            
+            
+            while ( num_denominador % num_cociente == num_numerador % num_cociente )
+            { // Comprueba si el resto del denominador y el numerador entre el cociente son iguales
+                
+                if (num_numerador % num_cociente == 0)
+                { // Comprueba si el resto del numerador entre el cociente es 0, entonces la division es entera
+                    
+                    num_denominador = num_denominador / num_cociente; //se divide, el denominador entre el cociente
+                    
+                    num_numerador = num_numerador / num_cociente; //se divide, el numerador entre el cociente
+                    
+                    //salida de texto con los parametros especificados
+                    
+                    cout << " = " ;
+                    
+                    cout << " ( -" << num_numerador << " / " << num_denominador << " ) ";
+                    
+                    num_cociente = 2;
+                    
+                }
+                
+            }
+           
+            
+        }
+        
+    }
+    
+    
+    return 0;
+}
+
