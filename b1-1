@@ -1,0 +1,52 @@
+/********** Boletin 01. Ejercicio 1. Segundos **************
+*
+* Proposito: Determinar los Dias, Horas, Minutos y Segundos, a partir de una variable de 
+*        entrada en segundos.
+*
+* Historial de Desarrollo:
+* Fecha         Autor
+* ----------    ---------------------------
+* 29/10/2012	Francisco Amororos Cubells
+*
+**************************************/
+
+// Introducir las librerias para la Utilizacion del cin y cout
+
+#include <iostream>
+using namespace std;
+
+int main (void)
+    {
+
+        int sec_base, num_sec, num_min, num_horas, num_dias; // Declaracion de las variables necesarias para hacer las operaciones pertinentes
+    
+        // Uso del cout para que el usuario introduzca los valores pertinentes
+        cout << "Dame los segundos necesarios para hacer las operaciones" << endl;
+        // Introduccion de los valores introduccidos por el usuario en la variable
+        cin >> sec_base;
+        
+        // La Variable num_sec se actualiza con el numero de segundos ( introducido ) restante al divitirlo entre 60
+
+        num_sec = sec_base % 60;
+        
+        /* La variable num_min se actualiza con el numero de minutos restante que queda al divir (los segundos introducidos pasados a minutos) entre 60 */
+        
+        num_min = (sec_base / 60 ) % 60;
+        
+        /*  La variable num_horas se actualiza con el numero de horas 
+         restante que queda al dividir el numero de segundos introducidos pasados a horas entre 24  */
+        
+        num_horas = ((sec_base / 60 )/60) % 24;
+        
+        /*  La variable num_dias se actualiza con el entero restante que queda de pasar los segundos introducidos a dias  */
+
+        num_dias = (((sec_base / 60 )/60)/ 24);
+
+        // Utilizacion del cout para imprimir las variables de las operaciones resultantes
+        
+        cout << " De los Segundos dados: " << sec_base << endl << "Tenemos "<< num_dias << " Dias, " << num_horas << " Horas, " << num_horas << " Minutos y " << num_sec << " Segundos." << endl;
+
+
+        return 0;
+
+    }
