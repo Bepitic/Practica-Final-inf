@@ -1,0 +1,82 @@
+/********** Boletin 01. Ejercicio 4. Pascua **************
+*
+* Proposito: Determinar el domingo de pascua
+*
+*
+* Historial de Desarrollo:
+* Fecha         Autor
+* ----------    ---------------------------
+* 31/10/2012  Francisco Amororos Cubells
+*
+**************************************/
+
+// Introducir las librerias para la Utilizacion del cin y cout
+
+#include <iostream>
+
+using namespace std;
+
+int main (void)
+{   
+    // Declaracion las variables pertinentes
+    
+    int a, b, c, d, e, n, year;
+    
+    // Imprimir por pantalla que el usuario ponga el año para que le saque el domingo de pascua
+    cout << "Introduce el anyo, del cual quieras sacar el domingo de pascua : " << endl;
+    
+    // Lo introducido por el usuario se almacena en la variable year
+    
+    cin >> year;
+    
+    
+    // Formula para sacar El domingo de pascua
+    
+    a = year % 19 ;
+
+    b = year % 4;
+
+    c = year % 7;
+
+    d = (19 * a + 24 ) % 30;
+
+    e = (2 * b + 4 * c + 6 * d + 5 ) % 7 ;
+
+    
+    n = (22 + d + e );
+    
+    // si n es mas pequeña de 31 , se imprime el resultado correspondiente
+
+    if ( n <=31 ) {
+        
+        cout << " En el anyo : " << year << endl <<"El primer domingo de pascua es en Marzo el dia : " << n <<endl;
+        
+        
+    }
+    
+    // si n es mas grande de 31, se hace la formula correspondiente y se imprime por pantalla el reultado pertinente
+    
+    else
+    {
+        
+        a = year % 19 ;
+
+        b = year % 4;
+
+        c = year % 7;
+
+        d = (19 * a + 24 ) % 30;
+
+        e = (2 * b + 4 * c + 6 * d + 5 ) % 7 ;
+
+        n = ( d + e - 9 );
+
+        cout << " En el anyo : " << year << endl <<"El primer domingo de pascua es en abril el dia : " << n <<endl;
+
+    }
+    
+    
+
+return 0;
+
+}
