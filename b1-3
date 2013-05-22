@@ -1,0 +1,89 @@
+/********** Boletin 01. Ejercicio 1. Terremoto **************
+*
+* Proposito: Determinar la escala ritcher a partir de dos valores dados 
+*
+*
+* Historial de Desarrollo:
+* Fecha         Autor
+* ----------    ---------------------------
+* 30/10/2012  Francisco Amororos Cubells
+*
+**************************************/
+// Ecuacion de la tabla
+// magnitud = log(ampliacion) + 3 * log(8 * tiempo )-2,92
+
+
+#include <iostream> // Introducir las librerias para la Utilizacion del cin y cout
+
+#include <math.h> // Introducir las librerias para la Utilizacion de Log()
+
+using namespace std;
+
+ int main (void)
+{
+    //Declaracion de las variables pertinentes
+    
+    float ampliacion, tiempo, magnitud, restar ;
+    
+    // Inicializacion de las varibles
+    
+    ampliacion = 0 ;
+
+    tiempo = 0 ;
+    
+    magnitud = 0 ;
+    
+    restar = 2.92 ;
+    
+    // Imprimir en pantalla que el usuario teclee el valor de la amplitud del terremoto
+    
+    cout << "Dame el valor de la amplitud del terremoto en milimetros" << endl ;
+    
+    // Lo tecleado por el usuario se introduce en la variable ampliacion
+    
+    cin >> ampliacion ;
+    
+    // Imprimir en pantalla que el usuario teclee el valor de la tiempo del terremoto
+    
+    cout << "Dame el valor del tiempo en segundos del teremoto" << endl ;
+    
+    // Lo tecleado por el usuario se introduce en la variable tiempo
+    
+    cin >> tiempo ;
+    
+    // El tiempo se multiplica por 8
+    
+    tiempo = 8 * tiempo ;
+    
+    // La formula pertinente para sacar la escala de ritcher
+    
+    magnitud = ( log(ampliacion)/log( 10 ) ) + ( 3 * log10( tiempo ) ) - restar ;
+    
+    //Imprimir por pantalla los resultados del programa dependiendo del tipo de resultado
+        
+    if ( magnitud <= 3.5 ) {
+        cout  << magnitud << " El efecto es imperceptible " << endl;
+    }
+    else if ( magnitud <= 5.4 && magnitud > 3.5 )
+    {
+        cout  << magnitud << " Su efecto es perceptible, pero sólo causa daños menores " << endl;
+    }
+    else if ( magnitud <= 6.0 && magnitud > 5.4 )
+    {
+        cout  << magnitud << " Ocasiona daños ligeros a edificios " << endl;
+    }
+    else if ( magnitud <= 6.9 && magnitud > 6 )
+    {
+        cout  << magnitud << " Puede ocasionar daños severos en áreas muy pobladas. " << endl;
+    }
+    else if ( magnitud <= 7.9 && magnitud > 6.9 )
+    {
+        cout  << magnitud << " Terremoto mayor. Causa graves daños " << endl;
+    }
+    else if ( magnitud >= 8.0 )
+    {
+        cout  << magnitud << " Gran terremoto. Destrucción total a comunidades cercanas " << endl;
+    }
+return 0;
+
+}
