@@ -1,0 +1,61 @@
+/********** Boletin 01. Ejercicio 8. Sumatorio de Cifras **************
+*
+* Proposito: Sumar todas las cifras de un numero cualquiera
+*
+* Historial de Desarrollo:
+* Fecha         Autor
+* ----------    ---------------------------
+* 29/10/2012  Francisco Amororos Cubells
+*
+**************************************/
+
+
+#include <iostream> // Introducir las librerias para la Utilizacion del cin y cout
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+    // Declaracion de variables
+    
+    long long num, num_copia, cifra, sum;
+    
+    cout << " Inserta un Numero para sumar sus cifras : " << endl;
+    
+    // La cantidad introducida se acumula en num
+    
+    cin >> num;
+    
+    // Inicializacion de las variables
+    
+    num_copia = num;
+    sum = 0;
+    cifra = 0;
+    
+    // seguir el bucle mientras la variable num_copia sea distinta de 0
+    
+    while( num_copia != 0 )
+    {
+        
+        // Sacamos la ultima cifra haciendo el resto de 10
+        
+        cifra = num_copia % 10;
+        
+        // Sum se le suma la ultima cifra obtenida
+        
+        sum += cifra;
+        
+        
+        // Al numero Copia se divide entre 10 para restarle una cifra
+        
+        num_copia = num_copia / 10;
+        
+    }
+    
+    // Se imprimen los resultados obtenidos en pantalla
+    cout << " La suma de las cifras obtenidas del numero introducido es : " << sum << endl;
+    
+
+    return 0;
+}
+
