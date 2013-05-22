@@ -1,0 +1,87 @@
+/********** Boletin 01. Ejercicio 2. Suma digitos **************
+*
+* Proposito: Introducir un numero de 4 cifras maximo y sacar la suma de sus cifras
+*
+* Historial de Desarrollo:
+* Fecha         Autor
+* ----------    ---------------------------
+* 29/10/2012  Francisco Amororos Cubells
+*
+**************************************/
+
+// Introducir las librerias para la Utilizacion del cin y cout
+
+#include <iostream> 
+
+using namespace std;
+
+ int main ()
+{
+    
+    // Declaracion de las variables pertinentes para hacer las operaciones necesarias
+    
+    int num, num1, num2, num3, num4, suma;
+    
+    // Imprimir en pantalla una cadena de caracteres para que el usuario tecle un numero
+    
+    cout<<"Dame un numero de 4 cifras : "<< endl;
+    
+    // Lo que el usuario teclea  se guarda en la varible num
+    
+    cin >> num;
+    
+    // Condicion para que el numero este comprendido entre 9999 y 0
+    if (num<=9999 && num>=0)
+    {
+    
+        /* La Variable num se divide y multiplica entre 10, 
+         y al numero original se le resta el resultado de 
+         la operacion anterior para sacar las Unidades */
+    
+        num4 = num - ( ( num / 10 ) * 10) ;
+    
+        
+        /*  La Variable num se divide entre 100 y multiplica entre 10,
+         y al numero original dividido entre 10, se le resta el resultado de
+         la operacion anterior para sacar las decenas */
+    
+        num3 = (num / 10 ) - (( num / 100 )*10);
+    
+        
+        /*  La Variable num se divide entre 1000 y multiplica entre 10,
+         y al numero original dividido entre 100, se le resta el resultado de
+         la operacion anterior para sacar las centenas */
+        
+        num2 = ( num / 100 ) - ((num / 1000 )*10) ;
+    
+    
+        
+        // la variable num se divide entre 1000 para obtener las unidades de millar
+
+        num1 = (num / 1000 );
+    
+    
+    
+        // Se suman todas las cifras para completar el ejercicio
+        
+        suma = num1+num2+num3+num4;
+    
+        // Se imprime por pantalla el resultado de las operaciones
+        
+        cout << "El numero es:" << num1 << num2 << num3 << num4 << endl << "La suma de los digitos es: " << suma << endl;
+        
+    }
+    
+    else
+    {
+        
+        // Se imprime por pantalla que no es un numero  valido el introducido por ser negativo o tener mas de 4 cifras 
+        
+        cout << "El numero introducido no contiene 4 digitos o es negativo"<< endl;
+        
+    }
+    
+
+return 0;
+
+}
