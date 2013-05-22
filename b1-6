@@ -1,0 +1,63 @@
+/********** Boletin 01. Ejercicio 6. Piramide **************
+ *
+ * Historial de Desarrollo:
+ * Fecha         Autor
+ * ----------    ---------------------------
+ * 03/11/2012  Francisco Amororos Cubells
+ *
+ **************************************/
+
+#include <iomanip> //Importando librerias para la utilizacion de setw()
+#include <iostream> //Importando librerias para la utilizacion de cin y cout
+using namespace std;
+
+int main(void)
+{   // Declaracion de variables
+    int num_piramide, num_esp;
+    
+    long num_out, num;
+    
+    // Asignacion de variables num_out y num
+    
+    num_out = 1;
+    
+    num = 1; 
+
+    //introduccion del numero que sera la largura la piramide
+    
+    cout << "Inserte un numero del 1 al 9 , para hacer una piramide : ";
+    
+    cin >> num_piramide;
+    
+    cout << endl;
+    
+    // Igualacion de la variable numero_espacios, con numero_piramide
+    
+    num_esp = num_piramide;
+
+    
+    // Numero de veces que se repetira el bucle en funcion de la altura de la piramide
+
+    for (  ; num_piramide > 0; num_piramide-- )
+        {
+            
+            num = num_out * num_out;
+            
+            //setw ( numero de caracteres que van a ir en ese cout)
+            //setfill ( el caracter que va a utilizar el  setw para rellenar el cout)
+            
+            cout << setw( num_esp ) << setfill(' ') << num << endl;
+        
+            // Se suma un caracter mas en el numero de caracteres
+            num_esp = num_esp + 1;
+            
+            // A num_out se multiplica por 10 y se suma 1  
+            num_out = ( num_out * 10 ) + 1;
+            
+            
+   
+        }
+    
+    return 0;
+}
+
